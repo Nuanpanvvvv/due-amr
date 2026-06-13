@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUE Online — โรงพยาบาลเพชรบูรณ์</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --blue:    #0B3D6B;
+  --blue-m:  #1565A8;
+  --blue-l:  #E8F1FA;
+  --teal:    #0D8A7A;
+  --teal-l:  #E0F5F2;
+  --pink:    #C0166C;
+  --amber:   #D97706;
+  --amber-l: #FEF3C7;
+  --green:   #166534;
+  --green-l: #DCFCE7;
+  --red:     #B91C1C;
+  --red-l:   #FEE2E2;
+  --g50:     #F8FAFC;
+  --g100:    #F1F5F9;
+  --g200:    #E2E8F0;
+  --g400:    #94A3B8;
+  --g600:    #475569;
+  --g800:    #1E293B;
+  --white:   #FFFFFF;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:var(--g50);color:var(--g800);font-size:15px;line-height:1.6}
+
+/* ── CONFIG BANNER ── */
+.config-banner{background:#1e1e2e;color:#cdd6f4;padding:12px 24px;font-family:'IBM Plex Mono',monospace;font-size:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.config-banner span{color:#a6e3a1}
+.config-banner input{background:#313244;border:1px solid #45475a;border-radius:4px;color:#cdd6f4;padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:12px;width:340px}
+.config-banner button{background:#89b4fa;color:#1e1e2e;border:none;border-radius:4px;padding:4px 12px;font-size:12px;cursor:pointer;font-weight:700}
+
+/* ── HEADER ── */
+header{background:var(--blue);color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hdr{max-width:980px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px}
+.hdr-logo{width:42px;height:42px;background:var(--blue-m);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.hdr h1{font-size:15px;font-weight:700}
+.hdr p{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.hdr-status{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:#6ee7b7;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── TABS ── */
+.tabs{background:var(--blue-m)}
+.tabs-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:4px}
+.tab{padding:10px 20px;border:none;background:transparent;color:rgba(255,255,255,.6);font-family:'Sarabun',sans-serif;font-size:14px;font-weight:500;cursor:pointer;border-bottom:3px solid transparent;transition:.2s}
+.tab.on{color:white;border-bottom-color:#7ecfff}
+.tab:hover:not(.on){color:white}
+
+/* ── MAIN ── */
+main{max-width:980px;margin:0 auto;padding:24px 24px 80px}
+.panel{display:none}.panel.on{display:block}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);margin-bottom:18px;overflow:hidden}
+.card-hdr{padding:13px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--g200)}
+.card-hdr.blue{background:var(--blue);color:white}
+.card-hdr.teal{background:var(--teal);color:white}
+.card-hdr.pink{background:var(--pink);color:white}
+.card-hdr.amber{background:var(--amber);color:white}
+.card-hdr.green{background:var(--green);color:white}
+.card-hdr h2{font-size:14px;font-weight:600}
+.card-hdr .sub{font-size:11px;opacity:.7;margin-left:auto}
+.badge{background:rgba(255,255,255,.25);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.card-body{padding:20px}
+
+/* ── HN LOOKUP ── */
+.hn-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:16px}
+.hn-row input{flex:1}
+.btn-lookup{background:var(--blue);color:white;border:none;border-radius:8px;padding:9px 18px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:6px}
+.btn-lookup:hover{background:var(--blue-m)}
+.btn-lookup.loading{opacity:.7;pointer-events:none}
+
+.patient-card{background:var(--blue-l);border:1.5px solid #B8D4F0;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:none}
+.patient-card.show{display:block}
+.patient-card .pt-name{font-size:17px;font-weight:700;color:var(--blue)}
+.patient-card .pt-meta{font-size:13px;color:var(--g600);margin-top:4px;display:flex;gap:16px;flex-wrap:wrap}
+.patient-card .pt-alert{background:var(--red-l);color:var(--red);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;margin-top:8px;display:inline-flex;align-items:center;gap:4px}
+
+/* ── FIELDS ── */
+.row{display:grid;gap:14px;margin-bottom:14px}
+.row-3{grid-template-columns:repeat(3,1fr)}
+.row-2{grid-template-columns:repeat(2,1fr)}
+.row-1{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+label.lbl{font-size:12px;font-weight:600;color:var(--g600);letter-spacing:.01em}
+label.lbl .req{color:var(--red);margin-left:2px}
+input[type=text],input[type=number],input[type=date],select,textarea{border:1.5px solid var(--g200);border-radius:8px;padding:9px 12px;font-family:'Sarabun',sans-serif;font-size:14px;color:var(--g800);background:white;outline:none;width:100%;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue-m);box-shadow:0 0 0 3px rgba(21,101,168,.12)}
+input[readonly]{background:var(--g100);color:var(--g600)}
+textarea{resize:vertical;min-height:70px}
+.computed{background:var(--blue-l);border:1.5px solid #B8D4F0;border-radius:8px;padding:9px 12px;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;color:var(--blue);min-height:40px;display:flex;align-items:center}
+
+/* ── CHECKS / RADIOS ── */
+.check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-top:4px}
+.ci{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1.5px solid var(--g200);border-radius:8px;cursor:pointer;transition:.15s;background:white;user-select:none}
+.ci:hover{border-color:var(--blue-m);background:var(--blue-l)}
+.ci.on{border-color:var(--blue-m);background:var(--blue-l)}
+.ci input[type=checkbox]{margin-top:2px;width:15px;height:15px;accent-color:var(--blue-m);flex-shrink:0;cursor:pointer}
+.ci span{font-size:13px;line-height:1.4}
+.rg{display:flex;gap:10px;flex-wrap:wrap}
+.ri{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--g200);border-radius:8px;cursor:pointer;transition:.15s;font-size:13.5px;user-select:none}
+.ri:hover{border-color:var(--blue-m);background:var(--blue-l)}
+.ri.on{border-color:var(--blue-m);background:var(--blue-l);color:var(--blue);font-weight:600}
+.ri input{accent-color:var(--blue-m)}
+
+/* ── DRUG CARDS ── */
+.drug-cards{display:flex;flex-direction:column;gap:10px}
+.dc{border:2px solid var(--g200);border-radius:10px;overflow:hidden;transition:.2s}
+.dc.on{border-color:var(--blue-m)}
+.dc-hdr{display:flex;align-items:center;gap:12px;padding:11px 16px;background:var(--g50);cursor:pointer}
+.dc.on .dc-hdr{background:var(--blue-l)}
+.dc-name{font-weight:700;font-size:14px;color:var(--blue)}
+.dc-sub{font-size:11px;color:var(--g600)}
+.dc-price{font-size:11px;color:var(--g600);margin-left:auto;font-family:'IBM Plex Mono',monospace}
+.dc-body{padding:16px;display:none;border-top:1px solid var(--g200)}
+.dc.on .dc-body{display:block}
+.ind-list{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.ind{display:flex;align-items:flex-start;gap:8px;padding:9px 13px;border:1.5px solid var(--g200);border-radius:8px;cursor:pointer;background:white;transition:.15s;user-select:none}
+.ind:hover{border-color:var(--teal);background:var(--teal-l)}
+.ind.on{border-color:var(--teal);background:var(--teal-l)}
+.ind input{margin-top:2px;width:15px;height:15px;accent-color:var(--teal);flex-shrink:0}
+.ind span{font-size:13px}
+
+/* ── PHARMACIST SECTION ── */
+.pharma-box{background:var(--amber-l);border:1.5px solid #fde68a;border-radius:10px;padding:16px}
+
+/* ── DIVIDER ── */
+hr.div{border:none;border-top:1px solid var(--g200);margin:16px 0}
+.lbl-sm{font-size:11px;color:var(--g600);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-l);color:var(--blue);border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;margin-top:4px}
+
+/* ── STICKY FOOTER ── */
+.footer-bar{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--g200);padding:12px 24px;display:flex;gap:10px;justify-content:flex-end;z-index:90;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+.btn{padding:10px 22px;border-radius:8px;border:none;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
+.btn-p{background:var(--blue);color:white}.btn-p:hover{background:var(--blue-m)}
+.btn-s{background:var(--g100);color:var(--g800)}.btn-s:hover{background:var(--g200)}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:80px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:999;pointer-events:none}
+.toast{background:var(--g800);color:white;border-radius:10px;padding:14px 18px;font-size:13.5px;display:flex;align-items:flex-start;gap:10px;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.2);transform:translateX(400px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:all}
+.toast.show{transform:translateX(0)}
+.toast.success{border-left:4px solid #6ee7b7}
+.toast.error{border-left:4px solid #f87171}
+.toast.info{border-left:4px solid #7ecfff}
+.toast-icon{font-size:18px;flex-shrink:0}
+.toast-body .toast-title{font-weight:700;margin-bottom:2px}
+.toast-body .toast-msg{font-size:12px;color:rgba(255,255,255,.7)}
+
+/* ── LINE PREVIEW ── */
+.line-preview{background:#06c755;border-radius:12px;padding:16px;color:white;font-size:13px;margin-top:12px;display:none}
+.line-preview.show{display:block}
+.line-bubble{background:white;color:#333;border-radius:0 12px 12px 12px;padding:12px 14px;font-size:12.5px;line-height:1.7;display:inline-block;max-width:100%;margin-top:8px;white-space:pre-wrap;font-family:'IBM Plex Mono',monospace}
+.line-label{font-size:11px;opacity:.8;margin-bottom:4px}
+
+/* ── PROGRESS ── */
+.prog-wrap{height:4px;background:var(--g200);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.prog{height:100%;background:linear-gradient(90deg,var(--blue-m),var(--teal));border-radius:10px;transition:width .4s ease}
+
+/* ── PAGE TITLE ── */
+.page-title{margin-bottom:20px}
+.page-title h2{font-size:18px;font-weight:700;color:var(--blue)}
+.page-title p{font-size:12px;color:var(--g600);margin-top:2px}
+
+@media(max-width:640px){
+  .row-3,.row-2{grid-template-columns:1fr}
+  .tab{padding:10px 12px;font-size:12px}
+  .config-banner input{width:200px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CONFIG BANNER ══ -->
+<div class="config-banner" id="configBanner">
+  <span>⚙️ Backend:</span>
+  <span style="color:#7ecfff;font-size:11px">Google Apps Script · LINE OA @868pavot · กลุ่มเภสัช AMR</span>
+  <span id="gasStatus" style="color:#f38ba8">● กำลังตรวจสอบ...</span>
+  <button onclick="testLine()">🧪 ทดสอบส่ง LINE</button>
+  <button onclick="checkGroupId()">🔍 ตรวจสอบ Group ID</button>
+  <button onclick="document.getElementById('configBanner').style.display='none'" style="margin-left:auto;background:#45475a;color:#cdd6f4">ซ่อน</button>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="hdr">
+    <div class="hdr-logo">🏥</div>
+    <div>
+      <h1>ระบบประเมินการใช้ยาต้านจุลชีพ (DUE Online)</h1>
+      <p>โรงพยาบาลเพชรบูรณ์ · Antimicrobial Stewardship Program</p>
+    </div>
+    <div class="hdr-status">
+      <div class="dot"></div>
+      <span style="color:rgba(255,255,255,.7)">KPHIS Mock API</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tabs-inner">
+      <button class="tab on" onclick="switchTab('due1',this)">📋 DUE1 — ขออนุมัติครั้งแรก</button>
+      <button class="tab" onclick="switchTab('due2',this)">🔄 DUE2 — ขอใช้ต่อเนื่อง</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ════════ DUE 1 ════════ -->
+<div id="panel-due1" class="panel on">
+  <div class="page-title">
+    <h2>แบบขออนุมัติใช้ยาต้านจุลชีพชนิดควบคุม (DUE1)</h2>
+    <p>ส่งภายใน 24 ชั่วโมงแรกของการรักษา · อนุมัติจ่ายยาได้ 4 วัน (96 ชั่วโมง)</p>
+  </div>
+  <div class="prog-wrap"><div class="prog" id="pb1" style="width:0%"></div></div>
+
+  <!-- S1 NURSE -->
+  <div class="card">
+    <div class="card-hdr blue">
+      <div class="badge">1</div>
+      <h2>ส่วนที่ 1 — พยาบาลหอผู้ป่วย</h2>
+      <span class="sub">ดึงข้อมูลจาก KPHIS อัตโนมัติ</span>
+    </div>
+    <div class="card-body">
+      <!-- HN LOOKUP -->
+      <p class="lbl-sm">ค้นหาผู้ป่วยด้วย HN</p>
+      <div class="hn-row">
+        <div class="field" style="flex:1">
+          <label class="lbl">HN <span class="req">*</span></label>
+          <input type="text" id="d1_hn" placeholder="กรอก HN แล้วกดค้นหา" onkeydown="if(event.key==='Enter')lookupHN('d1')">
+        </div>
+        <button class="btn-lookup" id="btn-lookup-d1" onclick="lookupHN('d1')">
+          <span>🔍</span> ดึงข้อมูล KPHIS
+        </button>
+      </div>
+
+      <!-- Patient Card (populated by lookup) -->
+      <div class="patient-card" id="pt-card-d1">
+        <div class="pt-name" id="pt-name-d1">—</div>
+        <div class="pt-meta">
+          <span>🪪 HN: <strong id="pt-hn-d1">—</strong></span>
+          <span>🛏️ Ward: <strong id="pt-ward-d1">—</strong></span>
+          <span>📅 อายุ: <strong id="pt-age-d1">—</strong> ปี</span>
+          <span>⚖️ BW: <strong id="pt-bw-d1">—</strong> kg</span>
+          <span>🩸 AN: <strong id="pt-an-d1">—</strong></span>
+        </div>
+        <div class="pt-alert" id="pt-allergy-d1" style="display:none">⚠️ แพ้ยา: <span id="pt-allergy-txt-d1"></span></div>
+      </div>
+
+      <!-- Hidden fields populated by lookup -->
+      <input type="hidden" id="d1_name">
+      <input type="hidden" id="d1_ward">
+      <input type="hidden" id="d1_age">
+      <input type="hidden" id="d1_bw">
+      <input type="hidden" id="d1_an">
+      <input type="hidden" id="d1_allergy">
+
+      <div class="row row-2">
+        <div class="field">
+          <label class="lbl">วันที่เขียน</label>
+          <input type="date" id="d1_date">
+        </div>
+        <div class="field">
+          <label class="lbl">หมายเหตุพยาบาล</label>
+          <input type="text" id="d1_note" placeholder="บันทึกเพิ่มเติม (ถ้ามี)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 DOCTOR -->
+  <div class="card">
+    <div class="card-hdr teal">
+      <div class="badge">2</div>
+      <h2>ส่วนที่ 2 — แพทย์ผู้สั่งใช้ยา</h2>
+    </div>
+    <div class="card-body">
+
+      <p class="lbl-sm">2.1 การวินิจฉัยโรคติดเชื้อ</p>
+      <div class="check-grid" id="diag-d1">
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="CAP"><span>CAP (ปอดอักเสบชุมชน)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="HAP"><span>HAP (ปอดอักเสบ รพ.)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="VAP"><span>VAP (Ventilator)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="UTI"><span>UTI (ทางเดินปัสสาวะ)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="CAUTI"><span>CAUTI (สายสวนปัสสาวะ)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="CLABSI"><span>CLABSI (สายสวนหลอดเลือด)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="SSTI"><span>SSTI (ผิวหนัง/เนื้อเยื่อ)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="BSI"><span>BSI (กระแสเลือด)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="IAI"><span>IAI (ช่องท้อง)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox" value="Meningitis"><span>Meningitis</span></label>
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label class="lbl">อื่นๆ</label>
+        <input type="text" id="d1_diag_other" placeholder="ระบุการวินิจฉัยเพิ่มเติม">
+      </div>
+
+      <hr class="div">
+      <p class="lbl-sm">2.2 แหล่งที่มาของเชื้อ</p>
+      <div class="rg" id="src-d1">
+        <label class="ri" onclick="tRd(this,'src-d1')"><input type="radio" name="src1"> Community Acquired</label>
+        <label class="ri" onclick="tRd(this,'src-d1')"><input type="radio" name="src1"> Hospital Acquired</label>
+      </div>
+
+      <hr class="div">
+      <p class="lbl-sm">2.3 สิ่งส่งตรวจ</p>
+      <div class="rg" style="margin-bottom:10px" id="sent-d1">
+        <label class="ri" onclick="tRd(this,'sent-d1');showEl('spec-d1',false)"><input type="radio" name="sent1"> ไม่ได้ส่งตรวจ</label>
+        <label class="ri" onclick="tRd(this,'sent-d1');showEl('spec-d1',true)"><input type="radio" name="sent1"> ส่งตรวจ</label>
+      </div>
+      <div id="spec-d1" style="display:none">
+        <div class="check-grid">
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Blood</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Urine</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Sputum</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Pus</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Ascites</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Synovial</span></label>
+        </div>
+        <div class="field" style="margin-top:8px"><input type="text" placeholder="อื่นๆ ระบุ"></div>
+      </div>
+
+      <hr class="div">
+      <p class="lbl-sm">2.4 เชื้อก่อโรค</p>
+      <div class="rg" id="path-d1">
+        <label class="ri" onclick="tRd(this,'path-d1');showEl('path-inp-d1',false)"><input type="radio" name="path1"> ไม่ทราบ / รอผล C/S</label>
+        <label class="ri" onclick="tRd(this,'path-d1');showEl('path-inp-d1',true)"><input type="radio" name="path1"> ทราบแล้ว</label>
+      </div>
+      <div id="path-inp-d1" style="display:none;margin-top:8px">
+        <input type="text" placeholder="ระบุเชื้อก่อโรค">
+      </div>
+
+      <hr class="div">
+      <p class="lbl-sm">2.5 คำนวณ CrCl (Cockroft-Gault)</p>
+      <div class="row row-3">
+        <div class="field">
+          <label class="lbl">เพศ</label>
+          <select id="d1_sex" onchange="calcCrCl()">
+            <option value="">-- เลือก --</option>
+            <option value="male">ชาย</option>
+            <option value="female">หญิง</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">SCr (mg/dL)</label>
+          <input type="number" id="d1_scr" placeholder="0.00" step="0.01" oninput="calcCrCl()">
+        </div>
+        <div class="field">
+          <label class="lbl">CrCl (คำนวณอัตโนมัติ)</label>
+          <div class="computed" id="d1_crcl">— กรอกข้อมูลให้ครบ</div>
+        </div>
+      </div>
+      <div id="crcl-hint"></div>
+    </div>
+  </div>
+
+  <!-- S3 DRUGS -->
+  <div class="card">
+    <div class="card-hdr pink">
+      <div class="badge">3</div>
+      <h2>รายการยาที่ต้องการสั่งใช้</h2>
+    </div>
+    <div class="card-body">
+      <div class="chip">💊 เลือกยา → กรอกขนาดยา → ระบุข้อบ่งชี้</div>
+      <div class="drug-cards" style="margin-top:14px">
+
+        <div class="dc" id="dc-mero">
+          <div class="dc-hdr" onclick="tDc('dc-mero')">
+            <input type="checkbox" style="width:17px;height:17px;accent-color:var(--blue-m);flex-shrink:0" onclick="event.stopPropagation();tDc('dc-mero')">
+            <div><div class="dc-name">Meropenem</div><div class="dc-sub">Penem M.H.® · Carbapenem</div></div>
+            <div class="dc-price">104 ฿/vial</div>
+          </div>
+          <div class="dc-body">
+            <div class="row row-2">
+              <div class="field"><label class="lbl">ขนาดยา</label><input type="text" placeholder="เช่น 1 g IV q 8 hr"></div>
+              <div class="field"><label class="lbl">ระยะเวลา (วัน)</label><input type="number" min="1" placeholder="วัน"></div>
+            </div>
+            <p class="lbl-sm" style="margin-top:10px">ข้อบ่งชี้</p>
+            <div class="ind-list">
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Empiric therapy: การติดเชื้อใน รพ. ที่ไม่ตอบสนองต่อยาอื่น</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Empiric therapy: Febrile neutropenia ที่ไม่ตอบสนองต่อยาอื่น</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>การติดเชื้อดื้อต่อ Cephalosporin, Aminoglycoside, Fluoroquinolone, BL/BLI</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>การติดเชื้อรุนแรงจาก ESBL+ve หรือแกรมลบดื้อยา 3rd-gen Cephalosporin</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>ไวต่อยากลุ่มอื่นแต่ไม่สามารถใช้ได้</span></label>
+            </div>
+            <div class="field" style="margin-top:8px"><label class="lbl">อื่นๆ</label><input type="text" placeholder="ระบุเหตุผล"></div>
+          </div>
+        </div>
+
+        <div class="dc" id="dc-imip">
+          <div class="dc-hdr" onclick="tDc('dc-imip')">
+            <input type="checkbox" style="width:17px;height:17px;accent-color:var(--blue-m);flex-shrink:0" onclick="event.stopPropagation();tDc('dc-imip')">
+            <div><div class="dc-name">Imipenem/Cilastatin</div><div class="dc-sub">Bionam® · Carbapenem</div></div>
+            <div class="dc-price">172 ฿/vial</div>
+          </div>
+          <div class="dc-body">
+            <div class="row row-2">
+              <div class="field"><label class="lbl">ขนาดยา</label><input type="text" placeholder="เช่น 500 mg IV q 6 hr"></div>
+              <div class="field"><label class="lbl">ระยะเวลา (วัน)</label><input type="number" min="1" placeholder="วัน"></div>
+            </div>
+            <div class="ind-list" style="margin-top:10px">
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Empiric therapy: การติดเชื้อใน รพ. ที่ไม่ตอบสนองต่อยาอื่น</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>การติดเชื้อรุนแรงจากแบคทีเรียแกรมลบดื้อยา 3rd-gen Cephalosporin และไวต่อ Carbapenems</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="dc" id="dc-erta">
+          <div class="dc-hdr" onclick="tDc('dc-erta')">
+            <input type="checkbox" style="width:17px;height:17px;accent-color:var(--blue-m);flex-shrink:0" onclick="event.stopPropagation();tDc('dc-erta')">
+            <div><div class="dc-name">Ertapenem</div><div class="dc-sub">Invanz® · Carbapenem</div></div>
+            <div class="dc-price">1,086 ฿/vial</div>
+          </div>
+          <div class="dc-body">
+            <div class="row row-2">
+              <div class="field"><label class="lbl">ขนาดยา</label><input type="text" placeholder="เช่น 1 g IV q 24 hr"></div>
+              <div class="field"><label class="lbl">ระยะเวลา (วัน)</label><input type="number" min="1" placeholder="วัน"></div>
+            </div>
+            <div class="ind-list" style="margin-top:10px">
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>การติดเชื้อรุนแรงจากแบคทีเรียแกรมลบดื้อยา Cephalosporin รุ่นที่ 3 และไวต่อ Carbapenems (มีผล C/S)</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>แพ้ยากลุ่ม Cephalosporins อย่างรุนแรง</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="dc" id="dc-pip">
+          <div class="dc-hdr" onclick="tDc('dc-pip')">
+            <input type="checkbox" style="width:17px;height:17px;accent-color:var(--blue-m);flex-shrink:0" onclick="event.stopPropagation();tDc('dc-pip')">
+            <div><div class="dc-name">Piperacillin/Tazobactam</div><div class="dc-sub">Piptam® · Antipseudomonal Penicillin</div></div>
+            <div class="dc-price">91 ฿/vial</div>
+          </div>
+          <div class="dc-body">
+            <div class="row row-2">
+              <div class="field"><label class="lbl">ขนาดยา</label><input type="text" placeholder="เช่น 4.5 g IV q 6 hr"></div>
+              <div class="field"><label class="lbl">ระยะเวลา (วัน)</label><input type="number" min="1" placeholder="วัน"></div>
+            </div>
+            <div class="ind-list" style="margin-top:10px">
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Empiric therapy: สงสัย P. aeruginosa ระหว่างรอผล C/S</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Empiric therapy: Febrile neutropenia</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>การติดเชื้อดื้อยา Cephalosporin, Aminoglycoside, Fluoroquinolone</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="dc" id="dc-fos">
+          <div class="dc-hdr" onclick="tDc('dc-fos')">
+            <input type="checkbox" style="width:17px;height:17px;accent-color:var(--blue-m);flex-shrink:0" onclick="event.stopPropagation();tDc('dc-fos')">
+            <div><div class="dc-name">Fosfomycin</div><div class="dc-sub">Fosmicin® · Miscellaneous</div></div>
+            <div class="dc-price">422 ฿/vial</div>
+          </div>
+          <div class="dc-body">
+            <div class="row row-2">
+              <div class="field"><label class="lbl">ขนาดยา</label><input type="text" placeholder="เช่น 8 g IV q 8 hr"></div>
+              <div class="field"><label class="lbl">ระยะเวลา (วัน)</label><input type="number" min="1" placeholder="วัน"></div>
+            </div>
+            <div class="ind-list" style="margin-top:10px">
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Combination synergist: MRSA, A. baumannii MDR, CRE ที่ยังไวต่อ Fosfomycin</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Secondary prophylaxis ATB for Neurosurgery</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="dc" id="dc-vanco">
+          <div class="dc-hdr" onclick="tDc('dc-vanco')">
+            <input type="checkbox" style="width:17px;height:17px;accent-color:var(--blue-m);flex-shrink:0" onclick="event.stopPropagation();tDc('dc-vanco')">
+            <div><div class="dc-name">Vancomycin</div><div class="dc-sub">Vangacin® · Glycopeptide</div></div>
+            <div class="dc-price">54 ฿/vial</div>
+          </div>
+          <div class="dc-body">
+            <div class="row row-2">
+              <div class="field"><label class="lbl">ขนาดยา</label><input type="text" placeholder="เช่น 15 mg/kg IV q 12 hr"></div>
+              <div class="field"><label class="lbl">ระยะเวลา (วัน)</label><input type="number" min="1" placeholder="วัน"></div>
+            </div>
+            <div class="ind-list" style="margin-top:10px">
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>การติดเชื้อ MRSA, MRSE หรือเชื้อแกรมบวกที่มีข้อจำกัดจากการใช้ยาอื่น</span></label>
+              <label class="ind" onclick="tCk(this)"><input type="checkbox"><span>Catheter related BSI ที่สงสัย MRSA</span></label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="div">
+      <div class="row row-2">
+        <div class="field">
+          <label class="lbl">ประเภทแพทย์</label>
+          <div class="rg" id="dtype-d1">
+            <label class="ri" onclick="tRd(this,'dtype-d1');showEl('intern-d1',false)"><input type="radio" name="dtype1"> Staff</label>
+            <label class="ri" onclick="tRd(this,'dtype-d1');showEl('intern-d1',true)"><input type="radio" name="dtype1"> Intern</label>
+          </div>
+          <div id="intern-d1" style="display:none;margin-top:8px">
+            <input type="text" placeholder="ชื่อแพทย์ Staff ที่ Consult (นพ./พญ.)">
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">ลงนามแพทย์ผู้สั่งใช้ยา <span class="req">*</span></label>
+          <input type="text" id="d1_doc" placeholder="ชื่อ-นามสกุล แพทย์">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 PHARMACIST -->
+  <div class="card">
+    <div class="card-hdr amber">
+      <div class="badge">✦</div>
+      <h2>ส่วนที่ 3 — เภสัชกร (Concurrent DUE)</h2>
+      <span class="sub">กรอกเมื่อได้รับแจ้งเตือนจาก LINE</span>
+    </div>
+    <div class="card-body">
+      <div class="pharma-box">
+        <p class="lbl-sm">CrCl ที่คำนวณได้</p>
+        <div class="computed" id="pharma-crcl" style="margin-bottom:14px">— รอข้อมูลจากแพทย์</div>
+        <p class="lbl-sm">ผลการประเมิน</p>
+        <div class="rg" id="assess-d1" style="margin-bottom:12px">
+          <label class="ri" onclick="tRd(this,'assess-d1')"><input type="radio" name="assess1"> ✅ Appropriate</label>
+          <label class="ri" onclick="tRd(this,'assess-d1')"><input type="radio" name="assess1"> ❌ Inappropriate</label>
+        </div>
+        <p class="lbl-sm">ปัญหาที่พบ (ถ้ามี)</p>
+        <div class="check-grid" style="margin-bottom:12px">
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Indication</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Dose</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Interval</span></label>
+          <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Culture</span></label>
+        </div>
+        <div class="row row-2">
+          <div class="field"><label class="lbl">ปรึกษาแพทย์ปรับการใช้ยาเป็น</label><input type="text" placeholder="ระบุ (ถ้ามี)"></div>
+          <div class="field"><label class="lbl">ลงชื่อเภสัชกร</label><input type="text" id="d1_pharma" placeholder="ชื่อ-นามสกุล เภสัชกร"></div>
+        </div>
+      </div>
+
+      <!-- LINE preview -->
+      <div class="line-preview" id="line-preview-d1">
+        <div class="line-label">📱 ตัวอย่างข้อความที่จะส่งไปยังกลุ่มไลน์ AMR เภสัช</div>
+        <div class="line-bubble" id="line-msg-d1"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /due1 -->
+
+<!-- ════════ DUE 2 ════════ -->
+<div id="panel-due2" class="panel">
+  <div class="page-title">
+    <h2>แบบขออนุมัติใช้ยาต้านจุลชีพที่ต้องประเมินต่อเนื่อง (DUE2)</h2>
+    <p>ส่งในวันที่ 5 ของการรักษา (ครบ 96 ชั่วโมง)</p>
+  </div>
+  <div class="prog-wrap"><div class="prog" id="pb2" style="width:0%"></div></div>
+
+  <div class="card">
+    <div class="card-hdr blue"><div class="badge">1</div><h2>ส่วนที่ 1 — พยาบาลหอผู้ป่วย</h2><span class="sub">ดึงข้อมูลจาก KPHIS อัตโนมัติ</span></div>
+    <div class="card-body">
+      <p class="lbl-sm">ค้นหาผู้ป่วยด้วย HN</p>
+      <div class="hn-row">
+        <div class="field" style="flex:1">
+          <label class="lbl">HN <span class="req">*</span></label>
+          <input type="text" id="d2_hn" placeholder="กรอก HN แล้วกดค้นหา" onkeydown="if(event.key==='Enter')lookupHN('d2')">
+        </div>
+        <button class="btn-lookup" id="btn-lookup-d2" onclick="lookupHN('d2')"><span>🔍</span> ดึงข้อมูล KPHIS</button>
+      </div>
+      <div class="patient-card" id="pt-card-d2">
+        <div class="pt-name" id="pt-name-d2">—</div>
+        <div class="pt-meta">
+          <span>🪪 HN: <strong id="pt-hn-d2">—</strong></span>
+          <span>🛏️ Ward: <strong id="pt-ward-d2">—</strong></span>
+          <span>📅 อายุ: <strong id="pt-age-d2">—</strong> ปี</span>
+          <span>⚖️ BW: <strong id="pt-bw-d2">—</strong> kg</span>
+        </div>
+        <div class="pt-alert" id="pt-allergy-d2" style="display:none">⚠️ แพ้ยา: <span id="pt-allergy-txt-d2"></span></div>
+      </div>
+      <input type="hidden" id="d2_name"><input type="hidden" id="d2_ward"><input type="hidden" id="d2_age"><input type="hidden" id="d2_bw">
+      <div class="row row-2" style="margin-top:12px">
+        <div class="field"><label class="lbl">วันที่เขียน</label><input type="date" id="d2_date"></div>
+        <div class="field"><label class="lbl">AN</label><input type="text" id="d2_an" placeholder="เลขที่ Admit"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr teal"><div class="badge">2</div><h2>ส่วนที่ 2 — แพทย์ผู้สั่งใช้ยา</h2></div>
+    <div class="card-body">
+      <p class="lbl-sm">2.1 ยาต้านจุลชีพที่ต้องการสั่งใช้ต่อ</p>
+      <div class="check-grid">
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Imipenem/Cilastatin (172 ฿)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Meropenem (104 ฿)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Ertapenem (1,086 ฿)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Fosfomycin (422 ฿)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Piperacillin/Tazobactam (91 ฿)</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Vancomycin (54 ฿)</span></label>
+      </div>
+      <div class="row row-2" style="margin-top:14px">
+        <div class="field"><label class="lbl">ระยะเวลาที่ต้องการสั่งต่อ (วัน)</label><input type="number" id="d2_dur" min="1" placeholder="วัน"></div>
+        <div class="field"><label class="lbl">การวินิจฉัยโรคติดเชื้อ</label><input type="text" id="d2_diag" placeholder="ระบุการวินิจฉัย"></div>
+      </div>
+
+      <hr class="div">
+      <p class="lbl-sm">Response of Treatment</p>
+      <div class="row row-2">
+        <div class="field">
+          <label class="lbl">ประเมินจาก</label>
+          <div class="rg" id="atype-d2">
+            <label class="ri" onclick="tRd(this,'atype-d2')"><input type="radio" name="atype2"> Clinical</label>
+            <label class="ri" onclick="tRd(this,'atype-d2')"><input type="radio" name="atype2"> Lab</label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">ผล</label>
+          <div class="rg" id="result-d2">
+            <label class="ri" onclick="tRd(this,'result-d2')"><input type="radio" name="result2"> ⬇️ Worse</label>
+            <label class="ri" onclick="tRd(this,'result-d2')"><input type="radio" name="result2"> ➡️ Same</label>
+            <label class="ri" onclick="tRd(this,'result-d2')"><input type="radio" name="result2"> ⬆️ Improve</label>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label class="lbl">Note</label><textarea placeholder="บันทึกเพิ่มเติม" rows="2"></textarea></div>
+
+      <hr class="div">
+      <p class="lbl-sm">2.4 การปรับ Spectrum ATB ภายหลังทราบผล C/S</p>
+      <div class="row row-1">
+        <div class="field">
+          <label class="lbl">ผล C/S Sense ต่อ ATB ที่ Start</label>
+          <div class="rg" id="cs-d2">
+            <label class="ri" onclick="tRd(this,'cs-d2')"><input type="radio" name="cs2"> Sensitive (S)</label>
+            <label class="ri" onclick="tRd(this,'cs-d2')"><input type="radio" name="cs2"> Intermediate (I)</label>
+            <label class="ri" onclick="tRd(this,'cs-d2')"><input type="radio" name="cs2"> Resistance (R)</label>
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label class="lbl">Management</label>
+        <div class="rg" id="mgmt-d2">
+          <label class="ri" onclick="tRd(this,'mgmt-d2')"><input type="radio" name="mgmt2"> De-escalation</label>
+          <label class="ri" onclick="tRd(this,'mgmt-d2')"><input type="radio" name="mgmt2"> Escalation</label>
+          <label class="ri" onclick="tRd(this,'mgmt-d2')"><input type="radio" name="mgmt2"> Continue ATB เดิม</label>
+        </div>
+        <input type="text" style="margin-top:8px" placeholder="ระบุยาที่ปรับ (ถ้ามี)">
+      </div>
+
+      <hr class="div">
+      <p class="lbl-sm">2.5 ผล Culture & Susceptibility</p>
+      <div class="chip" style="margin-bottom:10px">💡 Print ผล MLAB จาก KPHIS แนบแทนการกรอกได้</div>
+      <div class="row row-2">
+        <div class="field">
+          <label class="lbl">Specimen</label>
+          <div class="check-grid" style="grid-template-columns:1fr 1fr">
+            <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Blood</span></label>
+            <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Urine</span></label>
+            <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Sputum</span></label>
+            <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>Tissue</span></label>
+          </div>
+        </div>
+        <div class="field"><label class="lbl">เชื้อที่ขึ้น / ผล culture</label><textarea placeholder="ระบุเชื้อและ susceptibility" rows="4" id="d2_culture"></textarea></div>
+      </div>
+
+      <p class="lbl-sm" style="margin-top:10px">Sensitive ต่อยา (เลือกทุกตัวที่ S)</p>
+      <div class="check-grid" style="grid-template-columns:repeat(auto-fill,minmax(175px,1fr))">
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>AMIKACIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>GENTAMYCIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>CIPROFLOXACIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>LEVOFLOXACIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>CEFTRIAXONE</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>CEFTAZIDIME</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>CEFEPIME</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>IMIPENEM</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>MEROPENEM</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>ERTAPENEM</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>COLISTIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>VANCOMYCIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>FOSFOMYCIN</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>TIGECYCLINE</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>PIPERACIL/TAZOBAC</span></label>
+        <label class="ci" onclick="tCk(this)"><input type="checkbox"><span>CEFTAZIDIME/AVIB</span></label>
+      </div>
+
+      <hr class="div">
+      <div class="row row-2">
+        <div class="field"><label class="lbl">ประเภทแพทย์</label>
+          <div class="rg" id="dtype-d2">
+            <label class="ri" onclick="tRd(this,'dtype-d2');showEl('intern-d2',false)"><input type="radio" name="dtype2"> Staff</label>
+            <label class="ri" onclick="tRd(this,'dtype-d2');showEl('intern-d2',true)"><input type="radio" name="dtype2"> Intern</label>
+          </div>
+          <div id="intern-d2" style="display:none;margin-top:8px"><input type="text" placeholder="ชื่อแพทย์ Staff ที่ Consult"></div>
+        </div>
+        <div class="field"><label class="lbl">ลงนามแพทย์ <span class="req">*</span></label><input type="text" id="d2_doc" placeholder="ชื่อ-นามสกุล แพทย์"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr amber"><div class="badge">3</div><h2>ส่วนที่ 3 — เภสัชกร (ASP)</h2><span class="sub">กรอกเมื่อได้รับแจ้งเตือน LINE</span></div>
+    <div class="card-body">
+      <div class="pharma-box">
+        <div class="row row-2">
+          <div class="field"><label class="lbl">การส่ง Culture</label>
+            <div class="rg" id="cult-d2">
+              <label class="ri" onclick="tRd(this,'cult-d2')"><input type="radio" name="cult2"> ส่งตรวจ</label>
+              <label class="ri" onclick="tRd(this,'cult-d2')"><input type="radio" name="cult2"> ไม่ได้ส่งตรวจ</label>
+            </div>
+          </div>
+          <div class="field"><label class="lbl">Management ของแพทย์</label>
+            <div class="rg" id="mgmt-pharma-d2">
+              <label class="ri" onclick="tRd(this,'mgmt-pharma-d2')"><input type="radio" name="mpharma2"> Escalation</label>
+              <label class="ri" onclick="tRd(this,'mgmt-pharma-d2')"><input type="radio" name="mpharma2"> De-escalation</label>
+              <label class="ri" onclick="tRd(this,'mgmt-pharma-d2')"><input type="radio" name="mpharma2"> Continue</label>
+              <label class="ri" onclick="tRd(this,'mgmt-pharma-d2')"><input type="radio" name="mpharma2"> Off ยา</label>
+            </div>
+          </div>
+        </div>
+        <div class="row row-2" style="margin-top:12px">
+          <div class="field"><label class="lbl">DRPs</label>
+            <div class="rg" id="drp-d2">
+              <label class="ri" onclick="tRd(this,'drp-d2')"><input type="radio" name="drp2"> ไม่พบ</label>
+              <label class="ri" onclick="tRd(this,'drp-d2')"><input type="radio" name="drp2"> พบ</label>
+            </div>
+          </div>
+          <div class="field"><label class="lbl">ลงชื่อเภสัชกร</label><input type="text" id="d2_pharma" placeholder="ชื่อ-นามสกุล เภสัชกร"></div>
+        </div>
+      </div>
+      <div class="line-preview" id="line-preview-d2">
+        <div class="line-label">📱 ตัวอย่างข้อความที่จะส่งไปยังกลุ่มไลน์ AMR เภสัช</div>
+        <div class="line-bubble" id="line-msg-d2"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /due2 -->
+
+</main>
+
+<!-- FOOTER BUTTONS -->
+<div class="footer-bar" id="footer-due1">
+  <button class="btn btn-s" onclick="clearForm()">🗑️ ล้างข้อมูล</button>
+  <button class="btn btn-p" onclick="previewLine()">👁️ ดูตัวอย่าง LINE</button>
+  <button class="btn btn-p" style="background:var(--teal)" onclick="submitDUE1()">✅ ส่ง DUE1 + แจ้ง LINE เภสัช</button>
+</div>
+<div class="footer-bar" id="footer-due2" style="display:none">
+  <button class="btn btn-s" onclick="clearForm()">🗑️ ล้างข้อมูล</button>
+  <button class="btn btn-p" onclick="previewLine2()">👁️ ดูตัวอย่าง LINE</button>
+  <button class="btn btn-p" style="background:var(--teal)" onclick="submitDUE2()">✅ ส่ง DUE2 + แจ้ง LINE เภสัช</button>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+// ⚡ เปลี่ยน 2 ค่านี้เมื่อพร้อม:
+// LINE_TOKEN  → ใส่ token จริงจาก notify-bot.line.me
+// KPHIS_API   → endpoint ของ IT รพ. เพื่อ query ข้อมูลผู้ป่วยด้วย HN
+const CONFIG = {
+  LINE_TOKEN: localStorage.getItem('lineToken') || '',
+  // ⚡ Google Apps Script Backend — ไม่ต้องแก้ไข
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbzOSSKyGjgwt-GMpLbmmCo7TUhVTw29oDoCEVLbva1OABDoEozuM38QwWBrwOPf1jiP/exec',
+  GROUP_ID: 'C9b94f2970a7c0e0408b2513b114c7b32',
+  // ⚡ เมื่อ IT เปิด KPHIS API → เปลี่ยน null เป็น URL จริง
+  KPHIS_API: null
+};
+
+// ══ MOCK KPHIS DATA (ลบออกเมื่อเชื่อม API จริง) ══
+const MOCK_PATIENTS = {
+  '1234567': { hn:'1234567', an:'A2024-001', name:'นายสมชาย ใจดี', age:58, sex:'male', bw:65, ward:'อายุรกรรมชาย 1', allergy:'Penicillin' },
+  '7654321': { hn:'7654321', an:'A2024-002', name:'นางสาวสมหญิง รักสุขภาพ', age:42, sex:'female', bw:52, ward:'ICU', allergy:'' },
+  '1111111': { hn:'1111111', an:'A2024-003', name:'เด็กชายน้อย เพชรบูรณ์', age:8, sex:'male', bw:25, ward:'กุมารเวชกรรม', allergy:'Sulfa' },
+};
+
+// ══════════════════════════════════════════
+// TOKEN MANAGEMENT
+// ══════════════════════════════════════════
+function saveToken() {} // legacy - not used
+
+async function checkGroupId() {
+  const st = document.getElementById('gasStatus');
+  st.textContent = '● กำลังตรวจสอบ...';
+  st.style.color = '#f9e2af';
+  if (CONFIG.GROUP_ID) {
+    st.textContent = '✅ เชื่อมต่อกลุ่มเภสัช AMR แล้ว';
+    st.style.color = '#a6e3a1';
+  } else {
+    st.textContent = '⚠️ ยังไม่ได้ตั้งค่า Group ID';
+    st.style.color = '#f38ba8';
+  }
+}
+
+window.onload = () => {
+  const today = new Date().toISOString().split('T')[0];
+  ['d1_date','d2_date'].forEach(id => { const el = document.getElementById(id); if(el) el.value = today; });
+  // ตรวจสอบ Group ID อัตโนมัติ
+  setTimeout(checkGroupId, 1000);
+};
+
+// ══════════════════════════════════════════
+// KPHIS LOOKUP
+// ══════════════════════════════════════════
+async function lookupHN(prefix) {
+  const hn = document.getElementById(prefix + '_hn').value.trim();
+  if (!hn) { showToast('กรุณากรอก HN', 'error'); return; }
+
+  const btn = document.getElementById('btn-lookup-' + prefix);
+  btn.classList.add('loading');
+  btn.innerHTML = '<span>⏳</span> กำลังดึงข้อมูล...';
+
+  let patient = null;
+
+  // ── ถ้า IT เปิด KPHIS API แล้ว ──
+  if (CONFIG.KPHIS_API) {
+    try {
+      const res = await fetch(CONFIG.KPHIS_API + '?hn=' + hn, {
+        headers: { 'Authorization': 'Bearer ' + CONFIG.LINE_TOKEN }
+      });
+      if (res.ok) patient = await res.json();
+    } catch(e) {
+      showToast('ไม่สามารถเชื่อมต่อ KPHIS API ได้', 'error');
+    }
+  } else {
+    // ── Mock data (ลบออกเมื่อใช้ API จริง) ──
+    await new Promise(r => setTimeout(r, 800)); // simulate delay
+    patient = MOCK_PATIENTS[hn] || null;
+  }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<span>🔍</span> ดึงข้อมูล KPHIS';
+
+  if (!patient) {
+    showToast('ไม่พบข้อมูลผู้ป่วย HN: ' + hn, 'error');
+    return;
+  }
+
+  fillPatient(prefix, patient);
+  showToast('ดึงข้อมูล ' + patient.name + ' สำเร็จ', 'success');
+  calcCrCl();
+}
+
+function fillPatient(prefix, p) {
+  document.getElementById('pt-name-' + prefix).textContent = p.name;
+  document.getElementById('pt-hn-' + prefix).textContent = p.hn;
+  document.getElementById('pt-ward-' + prefix).textContent = p.ward;
+  document.getElementById('pt-age-' + prefix).textContent = p.age;
+  document.getElementById('pt-bw-' + prefix).textContent = p.bw;
+  if (document.getElementById('pt-an-' + prefix))
+    document.getElementById('pt-an-' + prefix).textContent = p.an || '—';
+
+  if (p.allergy) {
+    document.getElementById('pt-allergy-' + prefix).style.display = 'inline-flex';
+    document.getElementById('pt-allergy-txt-' + prefix).textContent = p.allergy;
+  } else {
+    document.getElementById('pt-allergy-' + prefix).style.display = 'none';
+  }
+  document.getElementById('pt-card-' + prefix).classList.add('show');
+
+  // store in hidden fields
+  document.getElementById(prefix + '_name').value = p.name;
+  document.getElementById(prefix + '_ward').value = p.ward;
+  document.getElementById(prefix + '_age').value = p.age;
+  document.getElementById(prefix + '_bw').value = p.bw;
+  if (document.getElementById(prefix + '_allergy'))
+    document.getElementById(prefix + '_allergy').value = p.allergy;
+  if (document.getElementById(prefix + '_an') && p.an)
+    document.getElementById(prefix + '_an').value = p.an;
+}
+
+// ══════════════════════════════════════════
+// CrCl CALCULATOR
+// ══════════════════════════════════════════
+function calcCrCl() {
+  const age = parseFloat(document.getElementById('d1_age').value);
+  const bw  = parseFloat(document.getElementById('d1_bw').value);
+  const scr = parseFloat(document.getElementById('d1_scr').value);
+  const sex = document.getElementById('d1_sex').value;
+  const el  = document.getElementById('d1_crcl');
+  const elP = document.getElementById('pharma-crcl');
+  const hint= document.getElementById('crcl-hint');
+
+  if (!age || !bw || !scr || !sex) {
+    el.textContent = '— กรอกข้อมูลให้ครบ';
+    return;
+  }
+  let v = ((140 - age) * bw) / (scr * 72);
+  if (sex === 'female') v *= 0.85;
+  v = Math.round(v * 10) / 10;
+
+  el.textContent = v + ' mL/min';
+  elP.textContent = v + ' mL/min';
+
+  let h = v >= 50 ? '✅ ปกติ — ใช้ขนาดยาปกติ'
+        : v >= 30 ? '⚠️ ไตบกพร่องน้อย — พิจารณาปรับขนาดยา'
+        : v >= 10 ? '🔴 ไตบกพร่องปานกลาง-รุนแรง — ต้องปรับขนาดยา'
+        :           '🆘 ไตวายรุนแรง — ปรับขนาดยาตามแนวทาง HD/CRRT';
+  hint.innerHTML = `<div class="chip">${h} (${v} mL/min)</div>`;
+}
+
+// ══════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════
+function tCk(el) {
+  const cb = el.querySelector('input[type=checkbox]');
+  if (cb) setTimeout(() => el.classList.toggle('on', cb.checked), 0);
+}
+function tRd(el, gid) {
+  document.querySelectorAll(`[id="${gid}"] .ri, #${gid} .ri`).forEach(r => r.classList.remove('on'));
+  setTimeout(() => el.classList.add('on'), 0);
+}
+function tDc(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('on');
+  const cb = card.querySelector('.dc-hdr input[type=checkbox]');
+  if (cb) cb.checked = card.classList.contains('on');
+}
+function showEl(id, show) {
+  document.getElementById(id).style.display = show ? 'block' : 'none';
+}
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('panel-' + tab).classList.add('on');
+  btn.classList.add('on');
+  document.getElementById('footer-due1').style.display = tab === 'due1' ? 'flex' : 'none';
+  document.getElementById('footer-due2').style.display = tab === 'due2' ? 'flex' : 'none';
+}
+function clearForm() {
+  if (!confirm('ล้างข้อมูลทั้งหมดในหน้านี้?')) return;
+  const panel = document.querySelector('.panel.on');
+  panel.querySelectorAll('input:not([type=hidden]),textarea,select').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+    else el.value = '';
+  });
+  panel.querySelectorAll('.ci,.ri,.dc').forEach(el => el.classList.remove('on'));
+  panel.querySelectorAll('.patient-card').forEach(el => el.classList.remove('show'));
+  panel.querySelectorAll('.line-preview').forEach(el => el.classList.remove('show'));
+}
+
+// ══════════════════════════════════════════
+// LINE NOTIFY
+// ══════════════════════════════════════════
+function buildLineMsg1() {
+  const name  = document.getElementById('d1_name').value || '—';
+  const hn    = document.getElementById('d1_hn').value || '—';
+  const ward  = document.getElementById('d1_ward').value || '—';
+  const an    = document.getElementById('d1_an').value || '—';
+  const doc   = document.getElementById('d1_doc').value || '—';
+  const crcl  = document.getElementById('d1_crcl').textContent || '—';
+  const drugs = [...document.querySelectorAll('.dc.on .dc-name')].map(d => d.textContent).join(', ') || '—';
+  const diags = [...document.querySelectorAll('#diag-d1 .ci.on input')].map(d => d.value).join(', ') || '—';
+
+  return `🔔 [DUE1] แจ้งเตือนประเมินยา AMR
+━━━━━━━━━━━━━━━━━━━━
+👤 ผู้ป่วย : ${name}
+🪪 HN      : ${hn}  AN: ${an}
+🛏️ Ward    : ${ward}
+💊 ยาที่ขออนุมัติ : ${drugs}
+🦠 วินิจฉัย : ${diags}
+🧮 CrCl    : ${crcl}
+👨‍⚕️ แพทย์  : ${doc}
+🕐 เวลา    : ${new Date().toLocaleString('th-TH')}
+━━━━━━━━━━━━━━━━━━━━
+📋 กรุณาเข้าประเมินและลงนาม DUE1`;
+}
+
+function buildLineMsg2() {
+  const name  = document.getElementById('d2_name').value || '—';
+  const hn    = document.getElementById('d2_hn').value || '—';
+  const ward  = document.getElementById('d2_ward').value || '—';
+  const doc   = document.getElementById('d2_doc').value || '—';
+  const diag  = document.getElementById('d2_diag').value || '—';
+  const dur   = document.getElementById('d2_dur').value || '—';
+
+  return `🔔 [DUE2] ขอใช้ยาต่อเนื่อง
+━━━━━━━━━━━━━━━━━━━━
+👤 ผู้ป่วย : ${name}
+🪪 HN      : ${hn}
+🛏️ Ward    : ${ward}
+🦠 วินิจฉัย : ${diag}
+📅 ขอต่อ   : ${dur} วัน
+👨‍⚕️ แพทย์  : ${doc}
+🕐 เวลา    : ${new Date().toLocaleString('th-TH')}
+━━━━━━━━━━━━━━━━━━━━
+📋 กรุณาประเมิน De/Escalation และลงนาม DUE2`;
+}
+
+function previewLine() {
+  const msg = buildLineMsg1();
+  document.getElementById('line-msg-d1').textContent = msg;
+  document.getElementById('line-preview-d1').classList.add('show');
+  document.getElementById('line-preview-d1').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+function previewLine2() {
+  const msg = buildLineMsg2();
+  document.getElementById('line-msg-d2').textContent = msg;
+  document.getElementById('line-preview-d2').classList.add('show');
+}
+
+async function sendLine(message) {
+  try {
+    const url = CONFIG.GAS_URL 
+      + '?action=sendLine'
+      + '&gid=C9b94f2970a7c0e0408b2513b114c7b32'
+      + '&msg=' + encodeURIComponent(message);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) return true;
+    showToast('❌ ส่ง LINE ไม่สำเร็จ: ' + (data.error || 'unknown error'), 'error');
+    return false;
+  } catch(e) {
+    showToast('❌ เชื่อมต่อ Backend ไม่ได้: ' + e.message, 'error');
+    return false;
+  }
+}
+
+async function submitDUE1() {
+  const hn  = document.getElementById('d1_hn').value;
+  const doc = document.getElementById('d1_doc').value;
+  if (!hn)  { showToast('กรุณาดึงข้อมูลผู้ป่วยด้วย HN ก่อน', 'error'); return; }
+  if (!doc) { showToast('กรุณาลงนามแพทย์ผู้สั่งใช้ยา', 'error'); return; }
+
+  const msg = buildLineMsg1();
+  document.getElementById('line-msg-d1').textContent = msg;
+  document.getElementById('line-preview-d1').classList.add('show');
+
+  showToast('⏳ กำลังส่งแจ้งเตือนไปยัง LINE กลุ่ม AMR เภสัช...', 'info');
+  const ok = await sendLine(msg);
+
+  if (ok) {
+    const ref = 'DUE1-' + Date.now().toString(36).toUpperCase();
+    showToast(`✅ ส่ง DUE1 สำเร็จ!\nRef: ${ref}\nเภสัชกรได้รับแจ้งเตือนแล้ว`, 'success', 6000);
+  } else {
+    showToast('❌ ส่ง LINE ไม่สำเร็จ กรุณาตรวจสอบ Token', 'error');
+  }
+}
+
+async function submitDUE2() {
+  const hn  = document.getElementById('d2_hn').value;
+  const doc = document.getElementById('d2_doc').value;
+  if (!hn)  { showToast('กรุณาดึงข้อมูลผู้ป่วยด้วย HN ก่อน', 'error'); return; }
+  if (!doc) { showToast('กรุณาลงนามแพทย์ผู้สั่งใช้ยา', 'error'); return; }
+
+  const msg = buildLineMsg2();
+  document.getElementById('line-msg-d2').textContent = msg;
+  document.getElementById('line-preview-d2').classList.add('show');
+
+  showToast('⏳ กำลังส่งแจ้งเตือนไปยัง LINE กลุ่ม AMR เภสัช...', 'info');
+  const ok = await sendLine(msg);
+  if (ok) {
+    const ref = 'DUE2-' + Date.now().toString(36).toUpperCase();
+    showToast(`✅ ส่ง DUE2 สำเร็จ!\nRef: ${ref}\nเภสัชกรได้รับแจ้งเตือนแล้ว`, 'success', 6000);
+  } else {
+    showToast('❌ ส่ง LINE ไม่สำเร็จ กรุณาตรวจสอบ Token', 'error');
+  }
+}
+
+async function testLine() {
+  const msg = `🧪 ทดสอบระบบ DUE Online
+โรงพยาบาลเพชรบูรณ์ · AMR เภสัช
+เวลา: ${new Date().toLocaleString('th-TH')}
+✅ ระบบพร้อมใช้งานแล้ว`;
+  showToast('⏳ กำลังทดสอบส่ง LINE...', 'info');
+  const ok = await sendLine(msg);
+  if (ok) showToast('✅ ทดสอบสำเร็จ! เช็คกลุ่มไลน์เภสัช AMR ได้เลย', 'success', 5000);
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function showToast(msg, type = 'info', duration = 4000) {
+  const wrap = document.getElementById('toastWrap');
+  const icons = { success:'✅', error:'❌', info:'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const lines = msg.split('\n');
+  t.innerHTML = `<div class="toast-icon">${icons[type]}</div>
+    <div class="toast-body">
+      <div class="toast-title">${lines[0]}</div>
+      ${lines.slice(1).map(l=>`<div class="toast-msg">${l}</div>`).join('')}
+    </div>`;
+  wrap.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 50);
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 400);
+  }, duration);
+}
+</script>
+</body>
+</html>
